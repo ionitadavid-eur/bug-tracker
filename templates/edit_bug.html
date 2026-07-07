@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Edit Bug #{{ bug.id }}</h1>
+
+<form method="POST" action="/edit/{{ bug.id }}">
+    <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" value="{{ bug.title }}" required>
+    </div>
+    <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" required>{{ bug.description }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Steps to Reproduce *</label>
+        <textarea name="steps" required>{{ bug.steps }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Expected Behavior *</label>
+        <textarea name="expected" required>{{ bug.expected }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Actual Behavior *</label>
+        <textarea name="actual" required>{{ bug.actual }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Environment *</label>
+        <input type="text" name="environment" value="{{ bug.environment }}" required>
+    </div>
+    <div class="form-group">
+        <label>Priority *</label>
+        <select name="priority" required>
+            <option value="High" {% if bug.priority == 'High' %}selected{% endif %}>High</option>
+            <option value="Medium" {% if bug.priority == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Low" {% if bug.priority == 'Low' %}selected{% endif %}>Low</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Status *</label>
+        <select name="status" required>
+            <option value="Open" {% if bug.status == 'Open' %}selected{% endif %}>Open</option>
+            <option value="In Progress" {% if bug.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Fixed" {% if bug.status == 'Fixed' %}selected{% endif %}>Fixed</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Date Reported *</label>
+        <input type="date" name="date_reported" value="{{ bug.date_reported }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="/bug/{{ bug.id }}" class="btn" style="background:#95a5a6; color:white; margin-left:10px;">Cancel</a>
+</form>
+{% endblock %}

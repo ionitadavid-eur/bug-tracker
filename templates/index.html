@@ -1,0 +1,97 @@
+Now replace everything in index.html with this:
+html{% extends 'base.html' %}
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:15px; margin-bottom:30px;">
+    <div style="background:white; padding:20px; border-radius:10px; text-align:center; border-top: 4px solid #2c3e50;">
+        <div style="font-size:36px; font-weight:bold; color:#2c3e50;">{{ total }}</div>
+        <div style="color:#666; margin-top:5px;">Total Bugs</div>
+    </div>
+    <div style="background:white; padding:20px; border-radius:10px; text-align:center; border-top: 4px solid #e74c3c;">
+        <div style="font-size:36px; font-weight:bold; color:#e74c3c;">{{ open_count }}</div>
+        <div style="color:#666; margin-top:5px;">Open</div>
+    </div>
+    <div style="background:white; padding:20px; border-radius:10px; text-align:center; border-top: 4px solid #f39c12;">
+        <div style="font-size:36px; font-weight:bold; color:#f39c12;">{{ in_progress_count }}</div>
+        <div style="color:#666; margin-top:5px;">In Progress</div>
+    </div>
+    <div style="background:white; padding:20px; border-radius:10px; text-align:center; border-top: 4px solid #2ecc71;">
+        <div style="font-size:36px; font-weight:bold; color:#2ecc71;">{{ fixed_count }}</div>
+        <div style="color:#666; margin-top:5px;">Fixed</div>
+    </div>
+    <div style="background:white; padding:20px; border-radius:10px; text-align:center; border-top: 4px solid #e74c3c;">
+        <div style="font-size:36px; font-weight:bold; color:#e74c3c;">{{ high_count }}</div>
+        <div style="color:#666; margin-top:5px;">High Priority</div>
+    </div>
+</div>
+
+<h2>Bug Reports</h2>
+
+<div class="filters">
+    <form method="GET" action="/" style="display:flex; gap:15px; background:none; padding:0;">
+        <div>
+            <label>Status</label>
+            <select name="status" onchange="this.form.submit()">
+                <option value="All" {% if status_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="Open" {% if status_filter == 'Open' %}selected{% endif %}>Open</option>
+                <option value="In Progress" {% if status_filter == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Fixed" {% if status_filter == 'Fixed' %}selected{% endif %}>Fixed</option>
+            </select>
+        </div>
+        <div>
+            <label>Priority</label>
+            <select name="priority" onchange="this.form.submit()">
+                <option value="All" {% if priority_filter == 'All' %}selected{% endif %}>All</option>
+                <option value="High" {% if priority_filter == 'High' %}selected{% endif %}>High</option>
+                <option value="Medium" {% if priority_filter == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="Low" {% if priority_filter == 'Low' %}selected{% endif %}>Low</option>
+            </select>
+        </div>
+    </form>
+    <a href="/add" class="btn btn-primary" style="margin-top:18px;">+ Report New Bug</a>
+    <a href="/export" class="btn btn-success" style="margin-top:18px;">⬇ Export CSV</a>
+</div>
+
+{% if bugs %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Environment</th>
+            <th>Date Reported</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bug in bugs %}
+        <tr>
+            <td>{{ bug.id }}</td>
+            <td><a href="/bug/{{ bug.id }}">{{ bug.title }}</a></td>
+            <td><span class="badge badge-{{ bug.priority | lower }}">{{ bug.priority }}</span></td>
+            <td>
+                <span class="badge {% if bug.status == 'Open' %}badge-open{% elif bug.status == 'In Progress' %}badge-progress{% else %}badge-fixed{% endif %}">
+                    {{ bug.status }}
+                </span>
+            </td>
+            <td>{{ bug.environment }}</td>
+            <td>{{ bug.date_reported }}</td>
+            <td>
+                <a href="/bug/{{ bug.id }}" class="btn btn-primary">View</a>
+                <a href="/edit/{{ bug.id }}" class="btn btn-success">Edit</a>
+                <form method="POST" action="/delete/{{ bug.id }}" style="display:inline; background:none; padding:0;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this bug?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No bugs found. <a href="/add">Report the first one!</a></p>
+{% endif %}
+{% endblock %}

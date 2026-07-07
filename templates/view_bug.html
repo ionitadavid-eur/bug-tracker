@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Bug #{{ bug.id }} — {{ bug.title }}</h1>
+
+<div class="detail-card">
+    <div class="detail-row">
+        <label>STATUS</label>
+        <p>
+            <span class="badge {% if bug.status == 'Open' %}badge-open{% elif bug.status == 'In Progress' %}badge-progress{% else %}badge-fixed{% endif %}">
+                {{ bug.status }}
+            </span>
+        </p>
+    </div>
+    <div class="detail-row">
+        <label>PRIORITY</label>
+        <p><span class="badge badge-{{ bug.priority | lower }}">{{ bug.priority }}</span></p>
+    </div>
+    <div class="detail-row">
+        <label>DESCRIPTION</label>
+        <p>{{ bug.description }}</p>
+    </div>
+    <div class="detail-row">
+        <label>STEPS TO REPRODUCE</label>
+        <p style="white-space: pre-line;">{{ bug.steps }}</p>
+    </div>
+    <div class="detail-row">
+        <label>EXPECTED BEHAVIOR</label>
+        <p>{{ bug.expected }}</p>
+    </div>
+    <div class="detail-row">
+        <label>ACTUAL BEHAVIOR</label>
+        <p>{{ bug.actual }}</p>
+    </div>
+    <div class="detail-row">
+        <label>ENVIRONMENT</label>
+        <p>{{ bug.environment }}</p>
+    </div>
+    <div class="detail-row">
+        <label>DATE REPORTED</label>
+        <p>{{ bug.date_reported }}</p>
+    </div>
+
+    <h2 style="margin-top:20px;">Update Status</h2>
+    <form method="POST" action="/update/{{ bug.id }}" style="background:none; padding:0;">
+        <div class="form-group" style="display:flex; gap:15px; align-items:center;">
+            <select name="status">
+                <option value="Open" {% if bug.status == 'Open' %}selected{% endif %}>Open</option>
+                <option value="In Progress" {% if bug.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Fixed" {% if bug.status == 'Fixed' %}selected{% endif %}>Fixed</option>
+            </select>
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </form>
+
+    <div style="margin-top:20px;">
+        <a href="/" class="btn" style="background:#95a5a6; color:white;">← Back to All Bugs</a>
+        <form method="POST" action="/delete/{{ bug.id }}" style="display:inline; background:none; padding:0;">
+            <button type="submit" class="btn btn-danger" style="margin-left:10px;" onclick="return confirm('Delete this bug?')">Delete Bug</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

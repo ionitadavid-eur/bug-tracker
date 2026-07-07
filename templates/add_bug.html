@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Report a Bug</h1>
+
+{% if duplicate %}
+<div style="background:#fff3cd; border:1px solid #f39c12; padding:15px; border-radius:8px; margin-bottom:20px;">
+    <strong>⚠️ Possible Duplicate Detected!</strong>
+    <p style="margin-top:8px;">A similar bug already exists: <a href="/bug/{{ duplicate.id }}">#{{ duplicate.id }} — {{ duplicate.title }}</a></p>
+    <p style="margin-top:5px;">Do you still want to submit this as a new bug?</p>
+</div>
+{% endif %}
+
+<form method="POST" action="/add">
+    <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" value="{{ form_data.title if form_data else '' }}" placeholder="Short description of the bug" required>
+    </div>
+    <div class="form-group">
+        <label>Description *</label>
+        <textarea name="description" required>{{ form_data.description if form_data else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Steps to Reproduce *</label>
+        <textarea name="steps" required>{{ form_data.steps if form_data else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Expected Behavior *</label>
+        <textarea name="expected" required>{{ form_data.expected if form_data else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Actual Behavior *</label>
+        <textarea name="actual" required>{{ form_data.actual if form_data else '' }}</textarea>
+    </div>
+    <div class="form-group">
+        <label>Environment *</label>
+        <input type="text" name="environment" value="{{ form_data.environment if form_data else '' }}" placeholder="e.g. Chrome 120, Windows 11 / Mobile Safari, iOS 17" required>
+    </div>
+    <div class="form-group">
+        <label>Priority *</label>
+        <select name="priority" required>
+            <option value="">-- Select Priority --</option>
+            <option value="High" {% if form_data and form_data.priority == 'High' %}selected{% endif %}>High</option>
+            <option value="Medium" {% if form_data and form_data.priority == 'Medium' %}selected{% endif %}>Medium</option>
+            <option value="Low" {% if form_data and form_data.priority == 'Low' %}selected{% endif %}>Low</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Status *</label>
+        <select name="status" required>
+            <option value="Open" {% if not form_data or form_data.status == 'Open' %}selected{% endif %}>Open</option>
+            <option value="In Progress" {% if form_data and form_data.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+            <option value="Fixed" {% if form_data and form_data.status == 'Fixed' %}selected{% endif %}>Fixed</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Date Reported *</label>
+        <input type="date" name="date_reported" value="{{ form_data.date_reported if form_data else '' }}" required>
+    </div>
+
+    {% if duplicate %}
+    <button type="submit" name="confirm" value="yes" class="btn btn-danger">Submit Anyway</button>
+    <a href="/add" class="btn" style="background:#95a5a6; color:white; margin-left:10px;">Start Over</a>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Submit Bug Report</button>
+    <a href="/" class="btn" style="background:#95a5a6; color:white; margin-left:10px;">Cancel</a>
+    {% endif %}
+</form>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Archived Bugs</h1>
+<p style="color:#666; margin-bottom:20px;">Bugs that were marked as Fixed more than 30 days ago are automatically archived here.</p>
+
+{% if bugs %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Environment</th>
+            <th>Date Reported</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bug in bugs %}
+        <tr>
+            <td>{{ bug.id }}</td>
+            <td><a href="/bug/{{ bug.id }}">{{ bug.title }}</a></td>
+            <td><span class="badge badge-{{ bug.priority | lower }}">{{ bug.priority }}</span></td>
+            <td>{{ bug.environment }}</td>
+            <td>{{ bug.date_reported }}</td>
+            <td>
+                <a href="/bug/{{ bug.id }}" class="btn btn-primary">View</a>
+                <form method="POST" action="/delete/{{ bug.id }}" style="display:inline; background:none; padding:0;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this bug?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No archived bugs yet.</p>
+{% endif %}
+{% endblock %}
